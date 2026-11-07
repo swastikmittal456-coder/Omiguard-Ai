@@ -18,6 +18,11 @@ Modern organisations distribute content creation across remote employees, region
 
 ---
 
+🚀 Live Deployed App: https://omniguard-ai-three.vercel.app
+ — Experience the real-time multi-modal brand governance scanner and cryptographic provenance engine live.
+ 
+---
+
 ## 🔄 The 5-Stage Product Pipeline
 1. **Stage 1: Ingest (Knowledge Graph + Vector Indexing)**:
    - 18 enterprise brand manuals and claim fact bases indexed into **Qdrant Vector DB** (384-dim semantic chunks) and **Neo4j Graph DB** (40 relationship nodes).
