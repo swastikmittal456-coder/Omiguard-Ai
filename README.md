@@ -50,10 +50,10 @@ Modern organisations distribute content creation across remote employees, region
 ---
 
 ## 👥 Team Layer 7
-* **Swastik Mittal**: Data / Systems Engineer & Brand Lead
-* **Aprajita**: Frontend Lead & Legal Counsel
-* **Aditya Baliyan**: Backend Lead & Systems Engineer
-* **Nikita Singh**: Full-Stack Integrator & Content Creator
+* **Swastik Mittal**: Data / Systems Engineer 
+* **Aprajita**: Frontend Lead 
+* **Aditya Baliyan**: Backend Lead 
+* **Nikita Singh**: Full-Stack Integrator 
 
 ---
 
