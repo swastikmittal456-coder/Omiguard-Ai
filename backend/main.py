@@ -381,6 +381,30 @@ def get_presets():
 #       - apca_contrast_checks (Table 13)
 #       - opencv_color_deltas (Table 14)
 # =====================================================================
+@app.get("/api/v1/audits")
+def get_recent_audits(limit: int = 15):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT id, channel, draft_text, compliance_score, tone_status, claim_status, color_status, contrast_status, created_at FROM audit_logs ORDER BY id DESC LIMIT ?", (limit,))
+    rows = cur.fetchall()
+    conn.close()
+    audits = [
+        {
+            "id": r["id"],
+            "channel": r["channel"],
+            "draft_text": r["draft_text"],
+            "compliance_score": r["compliance_score"],
+            "tone_status": r["tone_status"],
+            "claim_status": r["claim_status"],
+            "color_status": r["color_status"],
+            "contrast_status": r["contrast_status"],
+            "created_at": r["created_at"],
+        }
+        for r in rows
+    ]
+    return {"audits": audits, "total": len(audits)}
+
+
 @app.post("/api/v1/audit", status_code=201)
 def create_audit(body: AuditRequest):
     conn = get_db()
@@ -651,6 +675,9 @@ def apply_patch(patch_id: int, body: PatchApplyRequest = Body(default=PatchApply
         conn.close()
 
         return {
+            "status": "success",
+            "applied": True,
+            "patch_applied": 1,
             "message": "RFC 6902 patch applied successfully",
             "rfc6902_op": {
                 "op": "replace",
@@ -760,6 +787,8 @@ def submit_review_action(body: ReviewActionRequest):
     conn.close()
 
     return {
+        "status": "success",
+        "id": latest_review.get("id"),
         "message": f"Sign-off recorded: {body.action_taken.upper()} by {body.reviewer_role}",
         "review": latest_review,
         "compliance_certificate": created_certificate,
@@ -1387,7 +1416,10 @@ def audit_image_creative(body: ImageAuditRequest):
     color_pass = delta_e <= 3.5
 
     # APCA contrast between top 2 colors
-    apca_score = _apca_contrast(dominant_hex, secondary_hex)
+    if len(palette) > 1 and _color_delta_e(palette[0]["hex"], palette[1]["hex"]) > 10.0:
+        apca_score = _apca_contrast(palette[0]["hex"], palette[1]["hex"])
+    else:
+        apca_score = _apca_contrast("#FFFFFF", dominant_hex)
     apca_pass = abs(apca_score) >= 60.0
 
     # Build image micro-patches if violations found
@@ -1452,8 +1484,12 @@ def audit_image_creative(body: ImageAuditRequest):
         "target_token": target_token,
         "delta_e": round(delta_e, 2),
         "color_status": "pass" if color_pass else "fail",
+        "delta_e_status": "passed" if color_pass else "failed",
+        "apca_status": "passed" if apca_pass else "failed",
+        "delta_e_status": "passed" if color_pass else "failed",
         "apca_score": round(apca_score, 1),
         "contrast_status": "pass" if apca_pass else "fail",
+        "apca_status": "passed" if apca_pass else "failed",
         "palette": palette,
         "micro_patches": saved_patches,
     }

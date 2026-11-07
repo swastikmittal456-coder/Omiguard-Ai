@@ -1,6 +1,6 @@
 # OmniGuard AI — Intelligent Pre-Publication Brand Governance Platform
-> **CodeNexus Hackathon — Round 2 Enterprise Showcase**  
-> **Team**: Team Layer 7 | **Problem Statement**: Inkloom AI  
+> **CodeNexus Enterprise — Round 2 Enterprise Showcase**  
+> **Team**: OmniGuard Core Team | **Problem Statement**: Inkloom AI  
 
 ![Next.js](https://img.shields.io/badge/Frontend-Next.js%2014-black)
 ![FastAPI](https://img.shields.io/badge/Backend-FastAPI%20Python%203.12-009688)
@@ -49,11 +49,11 @@ Modern organisations distribute content creation across remote employees, region
 
 ---
 
-## 👥 Team Layer 7
-* **Swastik Mittal**: Data / Systems Engineer 
-* **Aprajita**: Frontend Lead 
-* **Aditya Baliyan**: Backend Lead 
-* **Nikita Singh**: Full-Stack Integrator 
+## 👥 OmniGuard Core Team
+* **Swastik Mittal**: Data / Systems Engineer & Brand Lead
+* **Aprajita**: Frontend Lead & Legal Counsel
+* **Aditya Baliyan**: Backend Lead & Systems Engineer
+* **Nikita Singh**: Full-Stack Integrator & Content Creator
 
 ---
 

@@ -4,8 +4,8 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'OmniGuard AI | Brand Governance',
-  description: 'Intelligent pre-publication brand governance and audit platform by Team Layer 7.',
-  generator: 'v0.app',
+  description: 'Intelligent pre-publication brand governance and audit platform firewall platform.',
+  generator: 'OmniGuard AI Enterprise',
   icons: {
     icon: [
       {

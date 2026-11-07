@@ -1,6 +1,6 @@
 # OmniGuard AI — Enterprise Pre-Publication Brand Governance Platform
-**Team Name**: Team Layer 7  
-**Hackathon**: CodeNexus Hackathon (Round 2 Submission)  
+**Team Name**: OmniGuard Core Team  
+**Enterprise**: CodeNexus Enterprise (Round 2 Submission)  
 **Problem Statement**: Inkloom AI  
 
 ---
@@ -81,7 +81,7 @@ npm run dev
 
 ---
 
-## 👥 Team Layer 7 Members
+## 👥 OmniGuard Core Team Members
 - **Swastik Mittal**: Data / Systems Engineer & Brand Lead
 - **Aprajita**: Frontend Lead & Legal Counsel
 - **Aditya Baliyan**: Backend Lead & Systems Engineer
