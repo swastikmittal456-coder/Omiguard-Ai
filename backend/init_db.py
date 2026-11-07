@@ -443,24 +443,24 @@ def init_database():
 
     # 10. brand_assets (18 rows)
     brand_assets_data = [
-        ("Primary Horizontal Logo (SVG)", "vector_logo", "/assets/logos/omniguard-primary.svg", "Swastik Mittal", "4.2"),
-        ("Secondary Wordmark White (SVG)", "vector_logo", "/assets/logos/omniguard-wordmark-white.svg", "Swastik Mittal", "4.2"),
-        ("Monochrome Icon Mark (SVG)", "vector_icon", "/assets/logos/omniguard-icon.svg", "Swastik Mittal", "4.2"),
-        ("Inter Display Typeface Package", "typography", "/assets/fonts/inter-display.woff2", "Aprajita", "1.0"),
-        ("JetBrains Mono Code Typeface", "typography", "/assets/fonts/jetbrains-mono.woff2", "Aprajita", "1.0"),
-        ("Brand Color Token JSON Schema", "design_tokens", "/assets/tokens/brand-tokens.json", "Swastik Mittal", "3.0"),
-        ("Executive Headshot Swastik Mittal", "photography", "/assets/team/swastik-mittal.jpg", "Nikita Singh", "2.1"),
-        ("Executive Headshot Aprajita", "photography", "/assets/team/aprajita.jpg", "Nikita Singh", "2.1"),
-        ("Executive Headshot Aditya Baliyan", "photography", "/assets/team/aditya-baliyan.jpg", "Nikita Singh", "2.1"),
-        ("Executive Headshot Nikita Singh", "photography", "/assets/team/nikita-singh.jpg", "Nikita Singh", "2.1"),
-        ("Enterprise Architecture Diagram", "illustration", "/assets/diagrams/enterprise-pipeline.svg", "Aditya Baliyan", "3.0"),
-        ("Qdrant & Neo4j Hybrid Flowchart", "illustration", "/assets/diagrams/qdrant-neo4j-hybrid.svg", "Swastik Mittal", "2.0"),
-        ("Packaging Die-Cut Template 500ml", "print_template", "/assets/templates/pack-500ml.ai", "Swastik Mittal", "1.2"),
-        ("Social Media LinkedIn Banner 1200x628", "social_template", "/assets/social/linkedin-hero.fig", "Aprajita", "2.4"),
-        ("X / Twitter Header Template 1500x500", "social_template", "/assets/social/x-header.fig", "Aprajita", "2.4"),
-        ("PR Newswire Standard Boilerplate", "legal_template", "/assets/legal/pr-boilerplate.txt", "Aprajita", "4.0"),
-        ("SOC 2 Type II Compliance Badge", "badge", "/assets/badges/soc2-type-2.svg", "Aditya Baliyan", "2026"),
-        ("WCAG 2.2 AA Perceptual Contrast Stamp", "badge", "/assets/badges/wcag-22-aa.svg", "Aditya Baliyan", "2.2"),
+        ("Primary Horizontal Logo (SVG)", "vector_logo", "/assets/logos/omniguard-primary.svg", "Design Operations", "4.2"),
+        ("Secondary Wordmark White (SVG)", "vector_logo", "/assets/logos/omniguard-wordmark-white.svg", "Design Operations", "4.2"),
+        ("Monochrome Icon Mark (SVG)", "vector_icon", "/assets/logos/omniguard-icon.svg", "Design Operations", "4.2"),
+        ("Inter Display Typeface Package", "typography", "/assets/fonts/inter-display.woff2", "Legal Review Board", "1.0"),
+        ("JetBrains Mono Code Typeface", "typography", "/assets/fonts/jetbrains-mono.woff2", "Legal Review Board", "1.0"),
+        ("Brand Color Token JSON Schema", "design_tokens", "/assets/tokens/brand-tokens.json", "Design Operations", "3.0"),
+        ("Executive Headshot Brand Director", "photography", "/assets/team/brand-director.jpg", "Content Operations", "2.1"),
+        ("Executive Headshot General Counsel", "photography", "/assets/team/general-counsel.jpg", "Content Operations", "2.1"),
+        ("Executive Headshot Chief Architect", "photography", "/assets/team/chief-architect.jpg", "Content Operations", "2.1"),
+        ("Executive Headshot Content Operations", "photography", "/assets/team/content-ops.jpg", "Content Operations", "2.1"),
+        ("Enterprise Architecture Diagram", "illustration", "/assets/diagrams/enterprise-pipeline.svg", "Architecture Team", "3.0"),
+        ("Qdrant & Neo4j Hybrid Flowchart", "illustration", "/assets/diagrams/qdrant-neo4j-hybrid.svg", "Design Operations", "2.0"),
+        ("Packaging Die-Cut Template 500ml", "print_template", "/assets/templates/pack-500ml.ai", "Design Operations", "1.2"),
+        ("Social Media LinkedIn Banner 1200x628", "social_template", "/assets/social/linkedin-hero.fig", "Legal Review Board", "2.4"),
+        ("X / Twitter Header Template 1500x500", "social_template", "/assets/social/x-header.fig", "Legal Review Board", "2.4"),
+        ("PR Newswire Standard Boilerplate", "legal_template", "/assets/legal/pr-boilerplate.txt", "Legal Review Board", "4.0"),
+        ("SOC 2 Type II Compliance Badge", "badge", "/assets/badges/soc2-type-2.svg", "Architecture Team", "2026"),
+        ("WCAG 2.2 AA Perceptual Contrast Stamp", "badge", "/assets/badges/wcag-22-aa.svg", "Architecture Team", "2.2"),
     ]
     cur.executemany("""
     INSERT INTO brand_assets (asset_title, asset_type, file_path, approved_by, version)
@@ -469,13 +469,13 @@ def init_database():
 
     # 11. team_roles (8 rows)
     roles_data = [
-        ("content_creator", "Nikita Singh", "Draft, Edit, Apply Patches", 0),
-        ("brand_lead", "Swastik Mittal", "Brand Strategy, Visual Tokens, Rule Ingestion", 1),
-        ("brand_manager", "Swastik Mittal", "Campaign Approvals & Tone Drift Governance", 1),
-        ("compliance_officer", "Aprajita", "Risk Assessment, Disclaimers, Provenance Verification", 1),
-        ("legal_counsel", "Aprajita", "Statutory Claim Validation & Final Certifications", 1),
-        ("systems_engineer", "Aditya Baliyan", "FastAPI, Vector Pipelines & RBAC Access", 1),
-        ("full_stack_integrator", "Nikita Singh", "Pipeline Deployments & QA Validation", 0),
+        ("content_creator", "Content Operations", "Draft, Edit, Apply Patches", 0),
+        ("brand_lead", "Design Operations", "Brand Strategy, Visual Tokens, Rule Ingestion", 1),
+        ("brand_manager", "Design Operations", "Campaign Approvals & Tone Drift Governance", 1),
+        ("compliance_officer", "Legal Review Board", "Risk Assessment, Disclaimers, Provenance Verification", 1),
+        ("legal_counsel", "Legal Review Board", "Statutory Claim Validation & Final Certifications", 1),
+        ("systems_engineer", "Architecture Team", "FastAPI, Vector Pipelines & RBAC Access", 1),
+        ("full_stack_integrator", "Content Operations", "Pipeline Deployments & QA Validation", 0),
         ("system", "OmniGuard Autonomous Worker", "Automated Policy Checks & Proof Hash Generation", 1),
     ]
     cur.executemany("""
@@ -512,7 +512,7 @@ def init_database():
         ("Google Ads", "World #1 Brand Platform | Miracle Results in 2 Days", 48.0, "fail", "fail", "pass", "pass", _ts(4)),
         ("LinkedIn", "Empower your creators with non-blocking feedback during drafting. OmniGuard AI provides instant line-by-line checks.", 95.0, "pass", "pass", "pass", "pass", _ts(3)),
         ("X", "Preserve creator intent with atomic RFC 6902 JSON micro-patches. No hallucinations, just compliant brand consistency.", 97.0, "pass", "pass", "pass", "pass", _ts(2)),
-        ("Press Release", "CodeNexus Hackathon Selects OmniGuard AI (Team Layer 7) for Round 2 Enterprise Brand Governance Showcase.", 100.0, "pass", "pass", "pass", "pass", _ts(1)),
+        ("Press Release", "CodeNexus Hackathon Selects OmniGuard AI (Enterprise Compliance Office) for Round 2 Enterprise Brand Governance Showcase.", 100.0, "pass", "pass", "pass", "pass", _ts(1)),
         ("Instagram", "Beautiful typography, validated color tokens, and guaranteed WCAG 2.2 AA contrast in every creative.", 96.0, "pass", "pass", "pass", "pass", _ts(1)),
         ("LinkedIn", "Our platform helps enterprise teams reduce brand review cycles by over 70% while maintaining 100% human-in-the-loop oversight.", 98.0, "pass", "pass", "pass", "pass", _ts(0)),
     ]
@@ -619,21 +619,21 @@ def init_database():
 
     # 12. compliance_certificates (15 rows)
     certificates = [
-        (4, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0004-VERIFIED')}", _ts(76), "brand_lead (Swastik Mittal)"),
-        (5, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0005-VERIFIED')}", _ts(66), "brand_manager (Swastik Mittal)"),
-        (6, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0006-VERIFIED')}", _ts(58), "brand_lead (Swastik Mittal)"),
-        (7, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0007-VERIFIED')}", _ts(51), "legal_counsel (Aprajita)"),
-        (8, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0008-VERIFIED')}", _ts(47), "compliance_officer (Aprajita)"),
-        (9, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0009-VERIFIED')}", _ts(42), "brand_manager (Swastik Mittal)"),
-        (10, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0010-VERIFIED')}", _ts(37), "compliance_officer (Aprajita)"),
-        (11, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0011-VERIFIED')}", _ts(32), "brand_lead (Swastik Mittal)"),
-        (12, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0012-VERIFIED')}", _ts(27), "brand_manager (Swastik Mittal)"),
-        (13, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0013-VERIFIED')}", _ts(25), "brand_lead (Swastik Mittal)"),
-        (14, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0014-VERIFIED')}", _ts(22), "brand_lead (Swastik Mittal)"),
-        (15, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0015-VERIFIED')}", _ts(19), "legal_counsel (Aprajita)"),
-        (20, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0020-VERIFIED')}", _ts(8), "systems_engineer (Aditya Baliyan)"),
-        (28, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0028-HACKATHON-R2')}", _ts(1), "legal_counsel (Aprajita)"),
-        (30, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0030-VERIFIED')}", _ts(0), "brand_lead (Swastik Mittal)"),
+        (4, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0004-VERIFIED')}", _ts(76), "brand_lead (Principal Brand Director)"),
+        (5, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0005-VERIFIED')}", _ts(66), "brand_manager (Enterprise Brand Governance)"),
+        (6, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0006-VERIFIED')}", _ts(58), "brand_lead (Principal Brand Director)"),
+        (7, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0007-VERIFIED')}", _ts(51), "legal_counsel (Office of General Counsel)"),
+        (8, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0008-VERIFIED')}", _ts(47), "compliance_officer (Regulatory Compliance Officer)"),
+        (9, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0009-VERIFIED')}", _ts(42), "brand_manager (Enterprise Brand Governance)"),
+        (10, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0010-VERIFIED')}", _ts(37), "compliance_officer (Regulatory Compliance Officer)"),
+        (11, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0011-VERIFIED')}", _ts(32), "brand_lead (Principal Brand Director)"),
+        (12, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0012-VERIFIED')}", _ts(27), "brand_manager (Enterprise Brand Governance)"),
+        (13, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0013-VERIFIED')}", _ts(25), "brand_lead (Principal Brand Director)"),
+        (14, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0014-VERIFIED')}", _ts(22), "brand_lead (Principal Brand Director)"),
+        (15, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0015-VERIFIED')}", _ts(19), "legal_counsel (Office of General Counsel)"),
+        (20, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0020-VERIFIED')}", _ts(8), "systems_engineer (Platform Security Architect)"),
+        (28, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0028-HACKATHON-R2')}", _ts(1), "legal_counsel (Office of General Counsel)"),
+        (30, f"urn:omniguard:sha256:{_sha256('OMNI-CERT-0030-VERIFIED')}", _ts(0), "brand_lead (Principal Brand Director)"),
     ]
     cur.executemany("""
     INSERT INTO compliance_certificates (audit_id, certificate_hash, issued_at, signer_role)

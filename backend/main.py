@@ -157,7 +157,7 @@ class ReviewActionRequest(BaseModel):
     reviewer_role: str = Field(..., examples=["brand_lead", "legal_counsel", "content_creator"])
     action_taken: str = Field(..., examples=["approved"])
     comment: Optional[str] = None
-    user_name: Optional[str] = "Swastik Mittal"
+    user_name: Optional[str] = "Principal Brand Director"
 
 
 class ImageAuditRequest(BaseModel):
@@ -1084,14 +1084,14 @@ def list_certificates():
 
 
 # =====================================================================
-#  Hackathon Rubric, Team Layer 7, Security, and Ecosystem Endpoints
+#  Hackathon Rubric, Enterprise Compliance Office, Security, and Ecosystem Endpoints
 # =====================================================================
 @app.get("/api/v1/hackathon/rubric")
 def get_hackathon_rubric():
     """Official 100-Point Hackathon Rubric Alignment Scorecard (Round 2 & 3)."""
     return {
         "title": "OmniGuard AI - Official 100-Point Hackathon Evaluation Rubric",
-        "team": "Team Layer 7",
+        "team": "Enterprise Compliance Office",
         "round_2_total": 100,
         "round_3_total": 100,
         "criteria": [
@@ -1158,7 +1158,7 @@ def get_hackathon_rubric():
                 "round_3_weight": "15 pts",
                 "proposal_mapping": "Transparent team role disclosures, responsible design explanations, and future expansion plans.",
                 "implementation_evidence": [
-                    "Team Layer 7 role disclosures (Swastik, Aprajita, Aditya, Nikita)",
+                    "Enterprise Governance Role Mandates (Brand Director, Legal Counsel, Security Architect, Content Ops)",
                     "48-Hour Execution Roadmap transparently tracking Hours 0-12, 12-32, 32-48",
                     "Responsible AI disclosure: human-in-the-loop sign-off, zero automated override, AES-256 vector store isolation",
                     "Future expansion plugins for Figma, Canva, Adobe CC & Multi-Language brand rule enforcement"
@@ -1171,34 +1171,34 @@ def get_hackathon_rubric():
 
 @app.get("/api/v1/team/roadmap")
 def get_team_and_roadmap():
-    """Team Layer 7 role allocations and 48-Hour execution roadmap."""
+    """Enterprise Compliance Office role allocations and 48-Hour execution roadmap."""
     return {
-        "team_name": "Team Layer 7",
+        "team_name": "Enterprise Compliance Office",
         "project": "OmniGuard AI",
         "members": [
             {
-                "name": "Swastik Mittal",
+                "name": "Principal Brand Director",
                 "role": "Data / Systems Engineer",
                 "ownership": "LLM pipelines, Qdrant vector retrieval, and Neo4j graph schema",
                 "avatar": "SM",
                 "status": "Active"
             },
             {
-                "name": "Aprajita",
+                "name": "Office of General Counsel",
                 "role": "Frontend Lead",
                 "ownership": "Next.js workspace UI, state management, styling, and review drawers",
                 "avatar": "AP",
                 "status": "Active"
             },
             {
-                "name": "Aditya Baliyan",
+                "name": "Platform Security Architect",
                 "role": "Backend Lead",
                 "ownership": "FastAPI endpoints, data models, rule evaluation engine, and RBAC authentication",
                 "avatar": "AB",
                 "status": "Active"
             },
             {
-                "name": "Nikita Singh",
+                "name": "Content Operations Lead",
                 "role": "Full-Stack Integrator",
                 "ownership": "API integration, Git merge management, deployment bug fixes, and QA testing",
                 "avatar": "NS",

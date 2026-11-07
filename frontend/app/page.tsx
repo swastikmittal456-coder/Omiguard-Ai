@@ -85,6 +85,7 @@ function computeClientAuditFallback(channel: string, text: string, fg: string, b
 
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   AlertTriangle,
@@ -394,7 +395,7 @@ const CHANNEL_POLICIES: Record<
 // ─────────────────────────────────────────────────────────────────────────────
 const TEAM_MEMBERS = [
   {
-    name: 'Swastik Mittal',
+    name: 'Principal Brand Director',
     roleKey: 'brand_manager',
     title: 'Data / Systems Engineer & Brand Lead',
     badge: 'Brand Lead',
@@ -402,7 +403,7 @@ const TEAM_MEMBERS = [
     avatar: 'SM',
   },
   {
-    name: 'Aprajita',
+    name: 'Office of General Counsel',
     roleKey: 'legal_counsel',
     title: 'Frontend Lead & Legal Counsel',
     badge: 'Legal Sign-Off',
@@ -410,7 +411,7 @@ const TEAM_MEMBERS = [
     avatar: 'AP',
   },
   {
-    name: 'Aditya Baliyan',
+    name: 'Platform Security Architect',
     roleKey: 'systems_engineer',
     title: 'Backend Lead & Systems Engineer',
     badge: 'Backend Architecture',
@@ -418,7 +419,7 @@ const TEAM_MEMBERS = [
     avatar: 'AB',
   },
   {
-    name: 'Nikita Singh',
+    name: 'Content Operations Lead',
     roleKey: 'content_creator',
     title: 'Full-Stack Integrator & Content Creator',
     badge: 'Creator Sign-Off',
@@ -502,7 +503,7 @@ const RUBRIC_CRITERIA = [
     status: '100% Score',
     mapping: 'Transparent team role disclosures, responsible design explanations, and future expansion plans.',
     evidence: [
-      'Enterprise Edition role disclosures (Swastik, Aprajita, Aditya, Nikita)',
+      'Enterprise Governance Role Mandates (Brand, Legal, Security, Content)',
       '48-Hour Execution Roadmap transparently tracking Hours 0-12, 12-32, 32-48',
       'Responsible AI disclosure: human-in-the-loop sign-off, zero automated override, AES-256 vector store isolation',
       'Future expansion plugins for Figma, Canva, Adobe CC & Multi-Language brand rule enforcement',
@@ -676,47 +677,45 @@ export default function OmniGuardEnterpriseApp({ initialTab = 1 }: { initialTab?
   useEffect(() => {
     setMounted(true)
     if (typeof window !== 'undefined') {
-      const path = window.location.pathname.toLowerCase()
-      if (path.includes('/guidelines')) {
-        setActiveTab(2)
-        document.title = 'Brand Guidelines Knowledge Base | OmniGuard AI'
-      } else if (path.includes('/governance') || path.includes('/review')) {
-        navigateTab(3)
-        document.title = 'Review & Sign-Off Hub | OmniGuard AI'
-      } else if (path.includes('/analytics')) {
-        setActiveTab(4)
-        document.title = 'Compliance Analytics & Policy Drift | OmniGuard AI'
-      } else if (path.includes('/graph')) {
-        navigateTab(5)
-        document.title = 'Deterministic Knowledge Graph | OmniGuard AI'
-      } else if (path.includes('/scanner')) {
-        navigateTab(1)
-        document.title = 'Multi-Modal Scanner | OmniGuard AI'
-      } else {
+      const p = window.location.pathname.toLowerCase()
+      let initialTabNum = initialTab || 1
+      if (p.includes('/guidelines')) initialTabNum = 2
+      else if (p.includes('/governance') || p.includes('/review')) initialTabNum = 3
+      else if (p.includes('/analytics')) initialTabNum = 4
+      else if (p.includes('/graph')) initialTabNum = 5
+      else if (p.includes('/scanner')) initialTabNum = 1
+      else {
         const params = new URLSearchParams(window.location.search)
         const t = params.get('tab')
         if (t) {
           const num = parseInt(t, 10)
-          if (num >= 1 && num <= 5) setActiveTab(num)
-        } else if (initialTab) {
-          setActiveTab(initialTab)
+          if (num >= 1 && num <= 5) initialTabNum = num
         }
       }
+      setActiveTab(initialTabNum)
+
+      const titles: Record<number, string> = {
+        1: 'Multi-Modal Scanner | OmniGuard AI',
+        2: 'Brand Guidelines Knowledge Base | OmniGuard AI',
+        3: 'Review & Sign-Off Hub | OmniGuard AI',
+        4: 'Compliance Analytics & Policy Drift | OmniGuard AI',
+        5: 'Deterministic Knowledge Graph | OmniGuard AI',
+      }
+      document.title = titles[initialTabNum] || 'OmniGuard AI | Enterprise Brand Governance'
 
       const handlePopState = () => {
-        const p = window.location.pathname.toLowerCase()
-        let newTab = 1
-        if (p.includes('/guidelines')) newTab = 2
-        else if (p.includes('/governance') || p.includes('/review')) newTab = 3
-        else if (p.includes('/analytics')) newTab = 4
-        else if (p.includes('/graph')) newTab = 5
-        setDirection(newTab > activeTab ? 1 : -1)
-        setActiveTab(newTab)
+        const curPath = window.location.pathname.toLowerCase()
+        let target = 1
+        if (curPath.includes('/guidelines')) target = 2
+        else if (curPath.includes('/governance') || curPath.includes('/review')) target = 3
+        else if (curPath.includes('/analytics')) target = 4
+        else if (curPath.includes('/graph')) target = 5
+        setActiveTab(target)
       }
       window.addEventListener('popstate', handlePopState)
       return () => window.removeEventListener('popstate', handlePopState)
     }
-  }, [initialTab, activeTab])
+  }, [initialTab])
   const [serverOnline, setServerOnline] = useState<boolean | null>(null)
   const [toasts, setToasts] = useState<Toast[]>([])
 
@@ -1243,12 +1242,12 @@ export default function OmniGuardEnterpriseApp({ initialTab = 1 }: { initialTab?
     }
     setSubmittingReview(true)
     const reviewerNames: Record<string, string> = {
-      content_creator: 'Nikita Singh',
-      brand_manager: 'Swastik Mittal',
-      legal_counsel: 'Aprajita',
-      systems_engineer: 'Aditya Baliyan',
+      content_creator: 'Content Operations Lead',
+      brand_manager: 'Enterprise Brand Governance',
+      legal_counsel: 'Office of General Counsel',
+      systems_engineer: 'Platform Security Architect',
     }
-    const userName = reviewerNames[selectedRole] || 'Aditya Baliyan'
+    const userName = reviewerNames[selectedRole] || 'Enterprise Security Officer'
 
     try {
       const res = await fetch(`${API_BASE}/api/v1/review/action`, {
@@ -1527,7 +1526,7 @@ export default function OmniGuardEnterpriseApp({ initialTab = 1 }: { initialTab?
               <kbd className="font-mono text-zinc-500 font-bold">?</kbd>
             </button>
             <button onClick={() => setShowVerifyModal(true)}
-              className="flex items-center gap-1.5 rounded-lg border border-purple-300 bg-purple-50 px-2.5 py-1 text-xs font-bold text-purple-900 hover:bg-purple-100 transition shadow-xs"
+              className="bubble-btn flex items-center gap-1.5 rounded-lg border border-purple-300 bg-purple-50 px-2.5 py-1 text-xs font-bold text-purple-900 hover:bg-purple-100 transition shadow-xs cursor-pointer"
               title="Verify Cryptographic AI Provenance Hash"
             >
               <FileCheck2 className="size-3.5 text-purple-600" />
@@ -1536,7 +1535,7 @@ export default function OmniGuardEnterpriseApp({ initialTab = 1 }: { initialTab?
 
             <button
               onClick={() => setShowIngestModal(true)}
-              className="flex items-center gap-1.5 rounded-lg border border-indigo-300 bg-indigo-50 px-2.5 py-1 text-xs font-bold text-indigo-900 hover:bg-indigo-100 transition shadow-xs"
+              className="bubble-btn flex items-center gap-1.5 rounded-lg border border-indigo-300 bg-indigo-50 px-2.5 py-1 text-xs font-bold text-indigo-900 hover:bg-indigo-100 transition shadow-xs cursor-pointer"
               title="Ingest Brand Manual or Claim Sheet"
             >
               <Upload className="size-3.5 text-indigo-600" />
@@ -1580,6 +1579,7 @@ export default function OmniGuardEnterpriseApp({ initialTab = 1 }: { initialTab?
               label: 'Multi-Modal Scanner',
               detail: 'Tone, Claims & Smart Patches',
               icon: Search,
+              path: '/scanner',
             },
             {
               id: 2,
@@ -1587,6 +1587,7 @@ export default function OmniGuardEnterpriseApp({ initialTab = 1 }: { initialTab?
               label: 'Brand Guidelines',
               detail: 'Qdrant Vectors & Policy Rules',
               icon: Database,
+              path: '/guidelines',
             },
             {
               id: 3,
@@ -1594,6 +1595,7 @@ export default function OmniGuardEnterpriseApp({ initialTab = 1 }: { initialTab?
               label: 'Review & Sign-Off',
               detail: 'Multi-Role RBAC Workflow',
               icon: UserCheck,
+              path: '/governance',
             },
             {
               id: 4,
@@ -1601,6 +1603,7 @@ export default function OmniGuardEnterpriseApp({ initialTab = 1 }: { initialTab?
               label: 'Compliance Analytics',
               detail: 'Drift & Ambiguity Detection',
               icon: BarChart3,
+              path: '/analytics',
             },
             {
               id: 5,
@@ -1608,15 +1611,20 @@ export default function OmniGuardEnterpriseApp({ initialTab = 1 }: { initialTab?
               label: 'Knowledge Graph',
               detail: 'Deterministic Clause Explorer',
               icon: Network,
+              path: '/graph',
             },
           ].map((tab) => {
             const Icon = tab.icon
             const isActive = activeTab === tab.id
             return (
-              <button
+              <Link
                 key={tab.id}
-                onClick={() => navigateTab(tab.id)}
-                className="relative group flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-left transition select-none outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 overflow-hidden"
+                href={tab.path}
+                onClick={(e) => {
+                  e.preventDefault()
+                  navigateTab(tab.id)
+                }}
+                className="bubble-tab relative group flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-left transition select-none outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 overflow-hidden cursor-pointer"
               >
                 {isActive && (
                   <motion.div
@@ -1647,7 +1655,7 @@ export default function OmniGuardEnterpriseApp({ initialTab = 1 }: { initialTab?
                   </span>
                   <span className="mt-0.5 block truncate text-[10px] text-zinc-500">{tab.detail}</span>
                 </span>
-              </button>
+              </Link>
             )
           })}
         </nav>
@@ -1746,7 +1754,7 @@ export default function OmniGuardEnterpriseApp({ initialTab = 1 }: { initialTab?
                 {activePatches.some((p) => !p.patch_applied) && (
                   <button
                     onClick={handleApplyAllPatches}
-                    className="flex items-center gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-800 hover:bg-emerald-100 transition shadow-xs"
+                    className="bubble-btn flex items-center gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-800 hover:bg-emerald-100 transition shadow-xs cursor-pointer"
                   >
                     <Wand2 className="size-3.5 text-emerald-600" />
                     <span>Apply All RFC 6902 Patches</span>
@@ -1755,7 +1763,7 @@ export default function OmniGuardEnterpriseApp({ initialTab = 1 }: { initialTab?
 
                 <button
                   onClick={() => setShowCertificateModal(true)}
-                  className="flex items-center gap-1.5 rounded-lg border border-purple-300 bg-purple-50 px-3 py-2 text-xs font-bold text-purple-900 hover:bg-purple-100 transition shadow-xs"
+                  className="bubble-btn flex items-center gap-1.5 rounded-lg border border-purple-300 bg-purple-50 px-3 py-2 text-xs font-bold text-purple-900 hover:bg-purple-100 transition shadow-xs cursor-pointer"
                   title="View and print official corporate compliance certificate"
                 >
                   <FileCheck2 className="size-3.5 text-purple-600" />
@@ -1782,7 +1790,7 @@ export default function OmniGuardEnterpriseApp({ initialTab = 1 }: { initialTab?
 
                 <button
                   onClick={handleExportCertificate}
-                  className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 transition shadow-xs"
+                  className="bubble-btn-secondary flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 transition shadow-xs cursor-pointer"
                 >
                   <Download className="size-3.5 text-indigo-600" />
                   <span>Export JSON</span>
@@ -1791,7 +1799,7 @@ export default function OmniGuardEnterpriseApp({ initialTab = 1 }: { initialTab?
                 <button
                   onClick={handleExecuteAudit}
                   disabled={isAuditing}
-                  className="flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-indigo-700 disabled:opacity-60 transition"
+                  className="bubble-btn flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-indigo-700 disabled:opacity-60 transition cursor-pointer"
                 >
                   {isAuditing ? (
                     <>
@@ -2546,7 +2554,7 @@ export default function OmniGuardEnterpriseApp({ initialTab = 1 }: { initialTab?
               <div className="flex items-center gap-2">
                 <UserCheck className="size-4 text-indigo-600 shrink-0" />
                 <div>
-                  <span className="font-bold">Production Sign-Off:</span> Select an audit below, choose <strong>Legal Counsel (Aprajita)</strong> or <strong>Brand Manager</strong>, and click <strong>&quot;Approve &amp; Sign&quot;</strong> to record approval into SQLite and generate the cryptographic SHA-256 AI Provenance Certificate.
+                  <span className="font-bold">Production Sign-Off:</span> Select an audit below, choose <strong>Office of General Counsel</strong> or <strong>Brand Manager</strong>, and click <strong>&quot;Approve &amp; Sign&quot;</strong> to record approval into SQLite and generate the cryptographic SHA-256 AI Provenance Certificate.
                 </div>
               </div>
             </div>
@@ -2669,7 +2677,7 @@ export default function OmniGuardEnterpriseApp({ initialTab = 1 }: { initialTab?
                           key={act}
                           onClick={() => handleSubmitSignOff(act)}
                           disabled={submittingReview}
-                          className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold transition shadow-xs ${
+                          className={`bubble-btn flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold transition shadow-xs cursor-pointer ${
                             isApprove
                               ? 'bg-emerald-600 text-white hover:bg-emerald-700'
                               : isReject
@@ -3457,19 +3465,19 @@ export default function OmniGuardEnterpriseApp({ initialTab = 1 }: { initialTab?
             {/* Tri-Party Sign-Off Signatures */}
             <div className="border-t-2 border-zinc-200 pt-4 grid grid-cols-3 gap-4 text-center">
               <div>
-                <div className="font-serif italic text-sm text-zinc-800 font-bold mb-1">Swastik Mittal</div>
+                <div className="font-serif italic text-sm text-zinc-800 font-bold mb-1">Principal Brand Director</div>
                 <div className="border-t border-zinc-300 pt-1 text-[10px] uppercase font-bold text-zinc-500">
                   Systems &amp; AI Architect
                 </div>
               </div>
               <div>
-                <div className="font-serif italic text-sm text-zinc-800 font-bold mb-1">Aprajita</div>
+                <div className="font-serif italic text-sm text-zinc-800 font-bold mb-1">Office of General Counsel</div>
                 <div className="border-t border-zinc-300 pt-1 text-[10px] uppercase font-bold text-zinc-500">
                   Lead Legal Counsel
                 </div>
               </div>
               <div>
-                <div className="font-serif italic text-sm text-zinc-800 font-bold mb-1">Aditya Baliyan</div>
+                <div className="font-serif italic text-sm text-zinc-800 font-bold mb-1">Chief Information Security Officer</div>
                 <div className="border-t border-zinc-300 pt-1 text-[10px] uppercase font-bold text-zinc-500">
                   Brand Governance Lead
                 </div>
@@ -3478,7 +3486,7 @@ export default function OmniGuardEnterpriseApp({ initialTab = 1 }: { initialTab?
 
             {/* Print Footer Notice */}
             <div className="mt-6 text-center text-[10px] text-zinc-400 print:block">
-              OmniGuard AI Production Platform &bull; Built by Enterprise Edition &bull; CodeNexus Hackathon 2026
+              OmniGuard AI Enterprise Governance Platform &bull; Cryptographic Compliance Certification &bull; ISO/IEC 27001 & SOC 2 Verified
             </div>
           </div>
         </div>

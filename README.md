@@ -32,7 +32,7 @@ Modern organisations distribute content creation across remote employees, region
    - Side-by-side red/green diff cards with 1-click atomic **RFC 6902 JSON micro-patching**.
 
 4. **Stage 4: Review (Collaborative Review Workspace)**:
-   - Role-Based Access Control (RBAC) review workflow for **Nikita Singh** (Creator), **Swastik Mittal** (Brand Manager), **Aprajita** (Legal Counsel), and **Aditya Baliyan** (Systems Engineer).
+   - Role-Based Access Control (RBAC) review workflow for **Content Operations Lead** (Creator), **Principal Brand Director** (Brand Manager), **Office of General Counsel** (Legal Counsel), and **Platform Security Architect** (Systems Engineer).
    - Generates and verifies cryptographic **SHA-256 AI provenance tags** and downloadable compliance certificates.
 
 5. **Stage 5: Analytics (Guideline Drift & Insight Engine)**:
@@ -50,10 +50,10 @@ Modern organisations distribute content creation across remote employees, region
 ---
 
 ## 👥 OmniGuard Core Team
-* **Swastik Mittal**: Data / Systems Engineer & Brand Lead
-* **Aprajita**: Frontend Lead & Legal Counsel
-* **Aditya Baliyan**: Backend Lead & Systems Engineer
-* **Nikita Singh**: Full-Stack Integrator & Content Creator
+* **Principal Brand Director**: Data / Systems Engineer & Brand Lead
+* **Office of General Counsel**: Frontend Lead & Legal Counsel
+* **Platform Security Architect**: Backend Lead & Systems Engineer
+* **Content Operations Lead**: Full-Stack Integrator & Content Creator
 
 ---
 

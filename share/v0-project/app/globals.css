@@ -161,3 +161,78 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* OmniGuard Enterprise Micro-Interactions & Bubble Animations */
+@layer utilities {
+  .bubble-btn {
+    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.22s ease;
+    will-change: transform, box-shadow;
+  }
+  .bubble-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 10px 24px -4px rgba(79, 70, 229, 0.28), 0 4px 8px -2px rgba(79, 70, 229, 0.14);
+  }
+  .bubble-btn:active {
+    transform: translateY(0.5px) scale(0.98);
+    box-shadow: 0 2px 6px -1px rgba(79, 70, 229, 0.2);
+  }
+
+  .bubble-btn-secondary {
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background-color 0.15s ease, border-color 0.15s ease;
+    will-change: transform;
+  }
+  .bubble-btn-secondary:hover {
+    transform: translateY(-1.5px) scale(1.015);
+    box-shadow: 0 6px 18px -3px rgba(0, 0, 0, 0.08);
+  }
+  .bubble-btn-secondary:active {
+    transform: translateY(0.5px) scale(0.98);
+  }
+
+  .bubble-card {
+    transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.24s ease;
+    will-change: transform, box-shadow;
+  }
+  .bubble-card:hover {
+    transform: translateY(-2.5px);
+    box-shadow: 0 12px 30px -6px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+  }
+
+  .bubble-tab {
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .bubble-tab:hover {
+    transform: translateY(-1px) scale(1.015);
+  }
+  .bubble-tab:active {
+    transform: translateY(0px) scale(0.99);
+  }
+
+  .bubble-badge {
+    transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: inline-flex;
+    align-items: center;
+  }
+  .bubble-badge:hover {
+    transform: scale(1.07);
+  }
+
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .glow-ring {
+    box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.25), 0 0 20px -3px rgba(99, 102, 241, 0.25);
+  }
+}
+
+@keyframes pulseSubtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.88; transform: scale(0.985); }
+}
+
+.animate-pulse-subtle {
+  animation: pulseSubtle 3s ease-in-out infinite;
+}

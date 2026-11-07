@@ -82,7 +82,7 @@ npm run dev
 ---
 
 ## 👥 OmniGuard Core Team Members
-- **Swastik Mittal**: Data / Systems Engineer & Brand Lead
-- **Aprajita**: Frontend Lead & Legal Counsel
-- **Aditya Baliyan**: Backend Lead & Systems Engineer
-- **Nikita Singh**: Full-Stack Integrator & Content Creator
+- **Principal Brand Director**: Data / Systems Engineer & Brand Lead
+- **Office of General Counsel**: Frontend Lead & Legal Counsel
+- **Platform Security Architect**: Backend Lead & Systems Engineer
+- **Content Operations Lead**: Full-Stack Integrator & Content Creator

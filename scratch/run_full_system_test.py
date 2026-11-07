@@ -236,14 +236,14 @@ def test_api():
             "reviewer_role": "legal_counsel",
             "action_taken": "approved",
             "comment": "Pre-publication claims verified against Q4 Fact Base Clause 3.2.",
-            "user_name": "Aprajita"
+            "user_name": "Office of General Counsel"
         }).encode('utf-8')
         req = urllib.request.Request(f"{BASE_URL}/api/v1/review/action", data=payload, headers={"Content-Type": "application/json"})
         resp = urllib.request.urlopen(req, timeout=5)
         data = json.loads(resp.read().decode())
         elapsed = (time.time() - t0) * 1000
         passed = data.get("status") == "success" or data.get("id") is not None
-        log_test("Backend API", "POST /api/v1/review/action (Multi-Role RBAC Sign-Off)", passed, f"Reviewer: Legal Counsel (Aprajita), Action: APPROVED", elapsed)
+        log_test("Backend API", "POST /api/v1/review/action (Multi-Role RBAC Sign-Off)", passed, f"Reviewer: Office of General Counsel, Action: APPROVED", elapsed)
     except Exception as e:
         log_test("Backend API", "POST /api/v1/review/action (Multi-Role RBAC Sign-Off)", False, str(e))
 
@@ -354,7 +354,7 @@ def test_codebase_hygiene():
     print("4. CODEBASE PROFESSIONAL PURITY & ZERO HACKATHON PHRASING")
     print("=======================================================")
     
-    forbidden = ["judge presets", "judge guide", "100-pt rubric", "100-point rubric", "team layer 7"]
+    forbidden = ["judge presets", "judge guide", "100-pt rubric", "100-point rubric", "team layer 7", "swastik", "aprajita", "baliyan", "nikita"]
     check_paths = [
         Path("share/v0-project/app/page.tsx"),
         Path("share/v0-project/app/layout.tsx"),
