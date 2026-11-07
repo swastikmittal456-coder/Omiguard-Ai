@@ -649,8 +649,10 @@ export default function OmniGuardEnterpriseApp({ initialTab = 1 }: { initialTab?
   const [mounted, setMounted] = useState(false)
 
   const navigateTab = useCallback((tabId: number) => {
-    setDirection(tabId > activeTab ? 1 : -1)
-    setActiveTab(tabId)
+    setActiveTab((prev) => {
+      setDirection(tabId > prev ? 1 : -1)
+      return tabId
+    })
     const routes: Record<number, string> = {
       1: '/scanner',
       2: '/guidelines',
@@ -672,7 +674,7 @@ export default function OmniGuardEnterpriseApp({ initialTab = 1 }: { initialTab?
       }
       document.title = titles[tabId] || 'OmniGuard AI | Enterprise Brand Governance'
     }
-  }, [activeTab])
+  }, [])
 
   useEffect(() => {
     setMounted(true)
@@ -710,7 +712,10 @@ export default function OmniGuardEnterpriseApp({ initialTab = 1 }: { initialTab?
         else if (curPath.includes('/governance') || curPath.includes('/review')) target = 3
         else if (curPath.includes('/analytics')) target = 4
         else if (curPath.includes('/graph')) target = 5
-        setActiveTab(target)
+        setActiveTab((prev) => {
+          setDirection(target > prev ? 1 : -1)
+          return target
+        })
       }
       window.addEventListener('popstate', handlePopState)
       return () => window.removeEventListener('popstate', handlePopState)
