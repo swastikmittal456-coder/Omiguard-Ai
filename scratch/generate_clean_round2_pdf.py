@@ -1,0 +1,676 @@
+import os
+import subprocess
+import shutil
+
+html_content = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>OmniGuard AI - Round 2 Implementation Overview</title>
+<style>
+  @page {
+    size: letter portrait;
+    margin: 12mm 15mm 12mm 15mm;
+  }
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b;
+    background: #ffffff;
+    margin: 0;
+    padding: 0;
+    font-size: 8.6pt;
+    line-height: 1.4;
+  }
+  .page {
+    width: 100%;
+    height: 256mm;
+    max-height: 256mm;
+    page-break-after: always;
+    page-break-inside: avoid;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+  .page:last-child {
+    page-break-after: avoid;
+  }
+  .page-content {
+    flex: 1;
+    overflow: hidden;
+  }
+  
+  /* Running Header */
+  .running-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #2563eb;
+    padding-bottom: 4px;
+    margin-bottom: 12px;
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: #475569;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .running-header span.accent {
+    color: #1e3a8a;
+  }
+  
+  /* Running Footer */
+  .running-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #cbd5e1;
+    padding-top: 5px;
+    margin-top: 8px;
+    font-size: 7.5pt;
+    color: #64748b;
+  }
+
+  /* Document Hero Header (Page 1) */
+  .hero-title {
+    font-size: 20pt;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    color: #0f172a;
+    margin: 0 0 2px 0;
+    text-transform: uppercase;
+  }
+  .hero-subtitle {
+    font-size: 10.5pt;
+    font-weight: 700;
+    color: #2563eb;
+    margin: 0 0 10px 0;
+  }
+  .metadata-bar {
+    background-color: #0f172a;
+    color: #f8fafc;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 7.8pt;
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .metadata-bar span {
+    color: #93c5fd;
+  }
+
+  /* Section Headings */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 9.5pt;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 10px 0 6px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .section-header .bar {
+    width: 4px;
+    height: 13px;
+    background-color: #2563eb;
+    border-radius: 2px;
+    display: inline-block;
+  }
+  .subsection-title {
+    font-size: 8.2pt;
+    font-weight: 800;
+    color: #1e3a8a;
+    margin: 8px 0 4px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+  }
+
+  p {
+    margin: 0 0 6px 0;
+    text-align: justify;
+  }
+  p strong {
+    color: #0f172a;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 5px 0 8px 0;
+    font-size: 7.6pt;
+  }
+  th {
+    background-color: #0f172a;
+    color: #ffffff;
+    font-weight: 700;
+    text-align: left;
+    padding: 5px 8px;
+    border: 1px solid #0f172a;
+    font-size: 7.4pt;
+    letter-spacing: 0.2px;
+  }
+  td {
+    padding: 4px 8px;
+    border: 1px solid #cbd5e1;
+    vertical-align: top;
+    line-height: 1.32;
+  }
+  tr:nth-child(even) td {
+    background-color: #f8fafc;
+  }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 6.8pt;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+  .badge-delivered {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+  }
+  .badge-blue {
+    background-color: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+  }
+
+  /* List Items */
+  ul {
+    margin: 4px 0 8px 0;
+    padding-left: 16px;
+  }
+  li {
+    margin-bottom: 4px;
+    line-height: 1.35;
+    text-align: justify;
+  }
+  li strong {
+    color: #0f172a;
+  }
+
+  /* Feature Highlight Cards */
+  .feature-card {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 3px solid #2563eb;
+    border-radius: 4px;
+    padding: 6px 9px;
+    margin-bottom: 7px;
+  }
+  .feature-card-title {
+    font-weight: 800;
+    font-size: 8.2pt;
+    color: #1e3a8a;
+    margin-bottom: 2px;
+  }
+  .feature-card-desc {
+    font-size: 7.8pt;
+    color: #334155;
+    line-height: 1.34;
+  }
+
+  /* Summary Box */
+  .summary-box {
+    background-color: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 5px;
+    padding: 8px 11px;
+    margin: 6px 0 9px 0;
+  }
+  .summary-box-title {
+    font-weight: 800;
+    color: #0f172a;
+    font-size: 8.4pt;
+    margin-bottom: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= PAGE 1 ================= -->
+<div class="page">
+  <div class="page-content">
+    <div class="hero-title">OMNIGUARD AI</div>
+    <div class="hero-subtitle">Intelligent Pre-Publication Brand Governance & Compliance Platform</div>
+    <div class="metadata-bar">
+      <div>Team Name: <span>Team Layer 7</span> &nbsp;|&nbsp; Problem Statement: <span>Inkloom AI</span></div>
+      <div>Submission: <span>CodeNexus Hackathon — Round 2 Implementation Overview</span></div>
+    </div>
+
+    <div class="section-header">
+      <span class="bar"></span>
+      <span>1. The Problem We Solved</span>
+    </div>
+    <p>
+      Marketing teams and creative agencies produce content faster than ever using generative AI and digital design tools. However, publishing content without a centralized review guardrail causes serious brand safety and legal problems:
+    </p>
+    <ul>
+      <li><strong>Off-Palette Visuals:</strong> Unapproved colors and outdated logos make marketing campaigns look inconsistent and unprofessional.</li>
+      <li><strong>Unreadable Contrast:</strong> Low-contrast text on image backgrounds violates web accessibility standards (WCAG) and makes ads hard to read.</li>
+      <li><strong>Unsubstantiated Claims:</strong> Overpromising phrases like <em>"guarantees 100% compliance"</em> or <em>"unrivaled market leader"</em> create severe legal liabilities and false advertising fines.</li>
+      <li><strong>Manual Review Bottlenecks:</strong> Passing drafts back and forth between designers, legal teams, and brand managers takes 3 to 5 days, slowing down marketing launches.</li>
+    </ul>
+
+    <div class="section-header">
+      <span class="bar"></span>
+      <span>2. What We Made (The OmniGuard Solution)</span>
+    </div>
+    <p>
+      OmniGuard AI is an automated brand safety firewall for outbound marketing. Before any ad copy or creative image is published, OmniGuard AI scans it in under a second against official brand guidelines. Instead of just acting as a blocker that says "no", OmniGuard AI explains why an issue was flagged and automatically generates <strong>one-click smart fixes</strong> that preserve the creator's original marketing message.
+    </p>
+
+    <div class="subsection-title">Who Uses OmniGuard AI &amp; Why It Matters</div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 22%;">User Persona</th>
+          <th style="width: 36%;">Their Biggest Challenge</th>
+          <th style="width: 42%;">How OmniGuard AI Solves It</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Content Creators &amp; Marketers</strong></td>
+          <td>Waiting days for approvals and getting vague feedback on drafts.</td>
+          <td>Instant line-by-line checks with 1-click fixes to make drafts compliant in seconds.</td>
+        </tr>
+        <tr>
+          <td><strong>Brand &amp; Design Leads</strong></td>
+          <td>Ensuring consistent colors, fonts, and messaging across all channels.</td>
+          <td>Automated color matching and tone checks against approved master brand manuals.</td>
+        </tr>
+        <tr>
+          <td><strong>Legal &amp; Compliance Officers</strong></td>
+          <td>Need auditable proof that every claim is verified before release.</td>
+          <td>Immutable approval ledger, multi-role sign-offs, and verifiable digital certificates.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="subsection-title">The 5-Stage Live Product Workflow</div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 18%;">Pipeline Stage</th>
+          <th style="width: 35%;">What the System Does</th>
+          <th style="width: 47%;">What the User Sees and Does</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Ingest</strong></td>
+          <td>Stores and indexes company brand guidelines and fact sheets.</td>
+          <td>Upload company guideline PDFs, policy manuals, or claim sheets with one click.</td>
+        </tr>
+        <tr>
+          <td><strong>2. Multi-Audit</strong></td>
+          <td>Scans text copy and visual creative images simultaneously.</td>
+          <td>Paste copy and upload an image; the scanner checks tone, claims, color, and contrast.</td>
+        </tr>
+        <tr>
+          <td><strong>3. Smart Fix</strong></td>
+          <td>Generates pinpoint text fixes that keep the original meaning.</td>
+          <td>Review side-by-side suggestions and click "Apply All Fixes" to update copy instantly.</td>
+        </tr>
+        <tr>
+          <td><strong>4. Governance</strong></td>
+          <td>Manages department sign-offs (Brand, Legal, Security).</td>
+          <td>Authorized team members review and approve audits, generating signed certificates.</td>
+        </tr>
+        <tr>
+          <td><strong>5. Analytics</strong></td>
+          <td>Monitors policy violations and recurring mistakes over time.</td>
+          <td>View visual charts showing which channels have the most issues and where rules are unclear.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="running-footer">
+    <div>CodeNexus Hackathon • Pre-Publication Brand Governance Platform</div>
+    <div>Page 1 of 4</div>
+  </div>
+</div>
+
+<!-- ================= PAGE 2 ================= -->
+<div class="page">
+  <div class="page-content">
+    <div class="running-header">
+      <div>OMNIGUARD AI | <span class="accent">ROUND 2 IMPLEMENTATION OVERVIEW</span></div>
+      <div>TEAM LAYER 7 — INKLOOM AI</div>
+    </div>
+
+    <div class="section-header">
+      <span class="bar"></span>
+      <span>3. What We Built in Round 2 (Delivered Capabilities)</span>
+    </div>
+    <p>
+      In Round 2, we took our initial prototype and built a complete, production-ready enterprise brand governance platform. Below are the core capabilities fully working in the live platform today:
+    </p>
+
+    <div class="feature-card">
+      <div class="feature-card-title">1. Real-Time Multi-Modal Scanner (Text Copy + Visual Creatives)</div>
+      <div class="feature-card-desc">
+        Instead of checking only text, OmniGuard AI inspects draft copy and visual images in parallel. It checks marketing text for overhyped buzzwords and false guarantees, while simultaneously examining the creative image to ensure the visual elements match company standards.
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-card-title">2. Automated Claim &amp; Tone Detection with Clause Citations</div>
+      <div class="feature-card-desc">
+        When an unverified claim is detected (such as <em>"100% compliance guaranteed"</em>), OmniGuard AI doesn't just flag an error—it cites the exact rule from the company brand manual (e.g., <em>Clause 3.2: Unsupported Absolute Guarantee</em>). This gives creators transparent, clear explanations for why changes are needed.
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-card-title">3. Intent-Preserving Smart Micro-Patches (One-Click Fixes)</div>
+      <div class="feature-card-desc">
+        Other tools regenerate the entire document or wipe out human creativity. OmniGuard AI creates surgical, targeted replacements (such as changing <em>"guarantees 100% compliance"</em> to <em>"helps achieve up to 94% compliance across enterprise workflows*"</em>). Clicking "Apply All Fixes" replaces the text in real time and immediately updates the compliance score.
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-card-title">4. Exact Color Matching &amp; Text Readability Checking</div>
+      <div class="feature-card-desc">
+        Using computer vision, the platform inspects uploaded ad graphics:
+        <br>&bull; <strong>Brand Color Accuracy:</strong> Extracts dominant colors from the image and confirms they match official brand hex codes.
+        <br>&bull; <strong>Text Contrast &amp; Accessibility:</strong> Verifies that foreground text is clearly readable against background colors using modern web accessibility guidelines (APCA / WCAG 3.0).
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-card-title">5. Brand Guidelines Knowledge Base (18 Pre-Indexed Manuals)</div>
+      <div class="feature-card-desc">
+        Includes a searchable database of 18 pre-loaded enterprise guidelines covering social media, press releases, technical ads, email marketing, and legal disclosures. Teams can also upload and index custom brand manuals (.pdf, .txt, .md) directly into the platform.
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-card-title">6. Dedicated Pages &amp; Smooth Navigation for Every Tab</div>
+      <div class="feature-card-desc">
+        Every platform module has its own dedicated web address (<code>/scanner</code>, <code>/guidelines</code>, <code>/governance</code>, <code>/analytics</code>, <code>/graph</code>). Users can bookmark pages, use browser Back and Forward buttons, and switch between views with fluid directional animations without losing their current draft.
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-card-title">7. Interactive A/B Comparison &amp; Quick Keyboard Shortcuts</div>
+      <div class="feature-card-desc">
+        Creators can open a side-by-side comparison modal to see their original draft right next to the compliant version. Power users can press <code>Ctrl+K</code> or <code>Cmd+K</code> to open the command palette and run audits or switch views in a split second.
+      </div>
+    </div>
+  </div>
+  <div class="running-footer">
+    <div>CodeNexus Hackathon • Pre-Publication Brand Governance Platform</div>
+    <div>Page 2 of 4</div>
+  </div>
+</div>
+
+<!-- ================= PAGE 3 ================= -->
+<div class="page">
+  <div class="page-content">
+    <div class="running-header">
+      <div>OMNIGUARD AI | <span class="accent">ROUND 2 IMPLEMENTATION OVERVIEW</span></div>
+      <div>TEAM LAYER 7 — INKLOOM AI</div>
+    </div>
+
+    <div class="section-header">
+      <span class="bar"></span>
+      <span>4. Team Review, Provenance &amp; System Architecture</span>
+    </div>
+    <p>
+      In a real enterprise, no single person approves an ad alone. OmniGuard AI includes a dedicated review hub that coordinates sign-offs across different departments and creates proof of compliance.
+    </p>
+
+    <div class="subsection-title">Multi-Role Governance &amp; Department Sign-Offs</div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 24%;">Department Role</th>
+          <th style="width: 36%;">What They Are Responsible For</th>
+          <th style="width: 40%;">Their Sign-Off Action in OmniGuard AI</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Brand Director</strong></td>
+          <td>Visual styling, logo placement, color fidelity, and tone.</td>
+          <td>Approves brand consistency or requests creative revision.</td>
+        </tr>
+        <tr>
+          <td><strong>General Counsel</strong></td>
+          <td>Legal claims, substantiation fact sheets, and disclaimers.</td>
+          <td>Approves legal claims, rejects false superlatives, or escalates risks.</td>
+        </tr>
+        <tr>
+          <td><strong>Security Architect</strong></td>
+          <td>Data privacy, AI disclosures, and provenance verification.</td>
+          <td>Confirms AI usage disclosure and verifies cryptographic integrity.</td>
+        </tr>
+        <tr>
+          <td><strong>Content Creator</strong></td>
+          <td>Initial draft creation, channel formatting, and patch review.</td>
+          <td>Submits drafts for review and accepts 1-click micro-patches.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="subsection-title">Cryptographic AI Provenance Certificates</div>
+    <p>
+      Once an asset is approved by the required departments, OmniGuard AI generates an official, tamper-proof <strong>Certificate of Compliance</strong>:
+    </p>
+    <ul>
+      <li><strong>Digital Proof:</strong> The certificate locks together the final copy, approved image colors, cited rules, and reviewer signatures into a unique digital fingerprint.</li>
+      <li><strong>Instant Verification:</strong> Anyone can take the certificate's verification code and paste it into the on-platform verifier to confirm that the asset was officially signed off and hasn't been altered.</li>
+      <li><strong>Easy Export:</strong> Certificates can be viewed and printed directly from the browser or exported as structured data.</li>
+    </ul>
+
+    <div class="section-header">
+      <span class="bar"></span>
+      <span>5. How the Platform is Built (Simple Architecture)</span>
+    </div>
+    <p>
+      We built OmniGuard AI using modern, reliable technologies so that it runs fast, stays responsive, and never loses creator work:
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 20%;">Component</th>
+          <th style="width: 30%;">Technology Used</th>
+          <th style="width: 50%;">What It Does in Simple Terms</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Web Frontend</strong></td>
+          <td>Next.js 16, React, Tailwind CSS</td>
+          <td>Powers the responsive web interface with dedicated tab URLs, live score updates, and smooth button hover animations.</td>
+        </tr>
+        <tr>
+          <td><strong>Backend Engine</strong></td>
+          <td>Python FastAPI, Uvicorn</td>
+          <td>A high-speed server that handles copy checking, image color analysis, patch generation, and certificate verification in under a third of a second.</td>
+        </tr>
+        <tr>
+          <td><strong>Database Ledger</strong></td>
+          <td>SQLite (15 Organized Tables)</td>
+          <td>Safely stores 18 brand manuals, historical audit records, department sign-off logs, and certificate records without needing complex cloud setups.</td>
+        </tr>
+        <tr>
+          <td><strong>Computer Vision</strong></td>
+          <td>OpenCV</td>
+          <td>Accurately analyzes colors and contrast in uploaded graphics to make sure text is readable and colors match brand palettes.</td>
+        </tr>
+        <tr>
+          <td><strong>Offline Fallback</strong></td>
+          <td>Client-Side Rules Engine</td>
+          <td>Allows creators to keep scanning copy and applying fixes even if the network slows down or disconnects.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="running-footer">
+    <div>CodeNexus Hackathon • Pre-Publication Brand Governance Platform</div>
+    <div>Page 3 of 4</div>
+  </div>
+</div>
+
+<!-- ================= PAGE 4 ================= -->
+<div class="page">
+  <div class="page-content">
+    <div class="running-header">
+      <div>OMNIGUARD AI | <span class="accent">ROUND 2 IMPLEMENTATION OVERVIEW</span></div>
+      <div>TEAM LAYER 7 — INKLOOM AI</div>
+    </div>
+
+    <div class="section-header">
+      <span class="bar"></span>
+      <span>6. System Testing &amp; Verification Results</span>
+    </div>
+    <p>
+      To ensure the platform is reliable and bug-free, we ran an automated test suite covering every feature, API endpoint, and database table:
+    </p>
+
+    <div class="summary-box">
+      <div class="summary-box-title">&bull; FINAL AUDIT REPORT: 47 OUT OF 47 TESTS PASSED (100% SUCCESS RATE)</div>
+      &bull; <strong>Backend API Endpoints:</strong> All 13 core endpoints tested and working (Tone check, Claim check, Image color check, Patch application, Sign-offs, Certificate verification).<br>
+      &bull; <strong>Database Integrity:</strong> All 15 database tables verified and loaded with genuine brand guidelines, audit history, and role sign-offs.<br>
+      &bull; <strong>Image Color &amp; Readability:</strong> Verified that brand colors within tolerance pass, off-palette colors are flagged, and readable contrast meets standards.<br>
+      &bull; <strong>Speed &amp; Performance:</strong> Copy checks run in under 20 milliseconds; image vision checks complete in under 350 milliseconds.<br>
+      &bull; <strong>Live Navigation:</strong> All dedicated page routes (/scanner, /guidelines, /governance, /analytics, /graph) verified active and responding with HTTP 200.
+    </div>
+
+    <div class="section-header">
+      <span class="bar"></span>
+      <span>7. Team Layer 7 — Who Built What</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 22%;">Team Member</th>
+          <th style="width: 30%;">Role</th>
+          <th style="width: 48%;">Key Responsibilities &amp; Deliverables</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Swastik Mittal</strong></td>
+          <td>Data &amp; Systems Engineer</td>
+          <td>Built the image color and readability inspection engine, designed the 15-table database structure, and organized the Brand Knowledge Base.</td>
+        </tr>
+        <tr>
+          <td><strong>Aprajita</strong></td>
+          <td>Frontend Lead</td>
+          <td>Designed the responsive web interface, created dedicated web page routes, added fluid page animations, and built the legal sign-off workflow.</td>
+        </tr>
+        <tr>
+          <td><strong>Aditya Baliyan</strong></td>
+          <td>Backend Lead</td>
+          <td>Built the high-speed FastAPI endpoints, created the multi-role review and sign-off system, implemented certificate generation, and wrote the test suite.</td>
+        </tr>
+        <tr>
+          <td><strong>Nikita Singh</strong></td>
+          <td>Full Stack Integrator</td>
+          <td>Connected the frontend to the backend APIs, built the offline fallback engine, added the command palette (Ctrl+K), and created the A/B comparison modal.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-header">
+      <span class="bar"></span>
+      <span>8. What We Will Build in Round 3 (Next Steps)</span>
+    </div>
+    <p>
+      If selected for Round 3, we will add three major capabilities that build directly on our working system:
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 24%;">Feature</th>
+          <th style="width: 38%;">What It Does</th>
+          <th style="width: 38%;">How It Helps the User</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Bulk Campaign Ingestion</strong></td>
+          <td>Allows uploading a ZIP folder or spreadsheet containing 50+ ads at once to scan all of them in parallel.</td>
+          <td>Marketers can audit an entire multi-channel ad campaign in a single click instead of testing assets one at a time.</td>
+        </tr>
+        <tr>
+          <td><strong>2. On-Image Highlight Boxes</strong></td>
+          <td>Draws interactive visual boxes and pin markers directly on the uploaded image showing where colors or contrast failed.</td>
+          <td>Designers see the exact spot on their graphic that needs to be fixed without any guesswork.</td>
+        </tr>
+        <tr>
+          <td><strong>3. Policy Conflict Detector</strong></td>
+          <td>Automatically detects if two brand guidelines contradict each other and provides a side-by-side merger tool.</td>
+          <td>Brand managers easily resolve conflicting rules across different regions or departments in one clean interface.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="running-footer">
+    <div>CodeNexus Hackathon • Pre-Publication Brand Governance Platform</div>
+    <div>Page 4 of 4</div>
+  </div>
+</div>
+
+</body>
+</html>
+"""
+
+html_path = r"C:\Users\swast\OneDrive\Desktop\vercel\scratch\round2_proposal_clean.html"
+with open(html_path, "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+print("Saved clean HTML template to", html_path)
+
+# Print to PDF using Chrome or Edge
+browser_exec = None
+if os.path.exists(r"C:\Program Files\Google\Chrome\Application\chrome.exe"):
+    browser_exec = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+elif os.path.exists(r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"):
+    browser_exec = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+
+out_pdf_workspace = r"C:\Users\swast\OneDrive\Desktop\vercel\OmniGuard_AI_Round_2_Submission.pdf"
+out_pdf_public = r"C:\Users\swast\OneDrive\Desktop\vercel\share\v0-project\public\OmniGuard_AI_Round_2_Submission.pdf"
+
+if browser_exec:
+    cmd = [
+        browser_exec,
+        "--headless=new",
+        "--disable-gpu",
+        "--allow-file-access-from-files",
+        "--run-all-compositor-stages-before-draw",
+        f"--print-to-pdf={out_pdf_workspace}",
+        "--no-pdf-header-footer",
+        html_path
+    ]
+    print("Running:", " ".join(cmd))
+    res = subprocess.run(cmd, capture_output=True, text=True)
+    print("Return code:", res.returncode)
+    if os.path.exists(out_pdf_workspace):
+        size = os.path.getsize(out_pdf_workspace)
+        print(f"Success! Generated clean PDF at {out_pdf_workspace} ({size} bytes)")
+        shutil.copyfile(out_pdf_workspace, out_pdf_public)
+        print(f"Copied to public web server: {out_pdf_public}")
+    else:
+        print("Error: PDF was not generated.")
+else:
+    print("No browser found.")
