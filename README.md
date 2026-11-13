@@ -1,5 +1,4 @@
 # OmniGuard AI — Enterprise Pre-Publication Brand Governance Platform
-> **CodeNexus 2026 — Round 3 Final Product Showcase**  
 > **Live Production Deployment**: [https://omniguard-ai-three.vercel.app](https://omniguard-ai-three.vercel.app)  
 > **Repository**: [https://github.com/swastikmittal456-coder/Omiguard-Ai](https://github.com/swastikmittal456-coder/Omiguard-Ai)  
 
@@ -233,4 +232,4 @@ uv run python ../scratch/run_round3_full_system_test.py
 * **Content Operations Lead**: Multi-channel campaign auditing, pre-flight inspection, and QA verification.
 
 ---
-*OmniGuard AI — Engineered for CodeNexus 2026 Round 3.*
+
